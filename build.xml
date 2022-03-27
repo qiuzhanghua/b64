@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="b64" default="compile">
+
+    <property file="build.properties"/>
+    <property name="src" location="src"/>
+    <property name="lib" location="lib"/>
+    <property name="build" location="build"/>
+    <property name="dist" location="dist"/>
+
+    <target name="init">
+        <tstamp/>
+        <mkdir dir="${build}"/>
+    </target>
+
+    <path id="lib.path.ref">
+        <fileset dir="${lib}" includes="*.jar"/>
+    </path>
+
+    <target name="compile" depends="init"
+            description="compile the source">
+        <javac srcdir="${src}" destdir="${build}"
+               includeantruntime="false"
+               classpathref="lib.path.ref"/>
+    </target>
+
+    <target name="run" depends="compile">
+        <java fork="true" failonerror="yes"
+              classname="${mainClass}"
+              classpathref="lib.path.ref">
+            <classpath path="${build}"/>
+        </java>
+    </target>
+
+    <target name="dist" depends="compile"
+            description="generate the distribution">
+        <mkdir dir="${dist}/lib"/>
+        <jar jarfile="${dist}/lib/${ant.project.name}-${DSTAMP}.jar" basedir="${build}"/>
+    </target>
+
+    <target name="clean"
+            description="clean up">
+        <delete dir="${build}"/>
+        <delete dir="${dist}"/>
+    </target>
+
+</project>
